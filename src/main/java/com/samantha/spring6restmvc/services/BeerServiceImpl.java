@@ -1,14 +1,19 @@
 package com.samantha.spring6restmvc.services;
 
 import com.samantha.spring6restmvc.model.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+@Slf4j
+@Service
 public class BeerServiceImpl implements BeerService{
     @Override
     public Beer getBeerById(UUID id) {
+
+        log.debug("Getting beer by id: " + id);
         return Beer.builder()
                 .id(id)
                 .version(1)
