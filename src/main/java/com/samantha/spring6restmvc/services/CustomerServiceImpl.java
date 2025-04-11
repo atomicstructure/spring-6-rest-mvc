@@ -75,4 +75,9 @@ public class CustomerServiceImpl implements CustomerService{
             throw new RuntimeException("Customer not found");
         }
     }
+
+    @Override
+    public void deleteById(UUID customerId) {
+        customerMap.remove(customerId);
+    }
 }

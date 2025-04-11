@@ -18,10 +18,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    public Customer saveNewCustomer(Customer customer) {
-        return customerService.saveNewCustomer(customer);
-    }
 
+    @DeleteMapping("{customerId}")
+    public  ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
+        customerService.deleteById(customerId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
     @PutMapping(value = "{customerId}", consumes = "application/json")
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         customerService.updateCustomerById(customerId, customer);
