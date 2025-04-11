@@ -80,4 +80,19 @@ public class CustomerServiceImpl implements CustomerService{
     public void deleteById(UUID customerId) {
         customerMap.remove(customerId);
     }
+
+    @Override
+    public void patchCustomerById(UUID customerId, Customer customer) {
+        Customer existingCustomer = customerMap.get(customerId);
+        if (existingCustomer != null) {
+            if (customer.getCustomerName() != null) {
+                existingCustomer.setCustomerName(customer.getCustomerName());
+            }
+        } else {
+            throw new RuntimeException("Customer not found");
+        }
+
+    }
+
+
 }
