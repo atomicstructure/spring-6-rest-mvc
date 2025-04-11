@@ -3,7 +3,6 @@ package com.samantha.spring6restmvc.controller;
 import com.samantha.spring6restmvc.model.Customer;
 import com.samantha.spring6restmvc.services.CustomerService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +17,17 @@ import java.util.UUID;
 public class CustomerController {
 
     private final CustomerService customerService;
+
+    public Customer saveNewCustomer(Customer customer) {
+        return customerService.saveNewCustomer(customer);
+    }
+
+    @PutMapping(value = "{customerId}", consumes = "application/json")
+    public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
+        customerService.updateCustomerById(customerId, customer);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
     @PostMapping(consumes = "application/json")
     public ResponseEntity handlePost(@RequestBody Customer customer) {
