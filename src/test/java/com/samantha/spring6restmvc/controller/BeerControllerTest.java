@@ -1,5 +1,6 @@
 package com.samantha.spring6restmvc.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.samantha.spring6restmvc.model.Beer;
 import com.samantha.spring6restmvc.services.BeerService;
@@ -25,13 +26,23 @@ class BeerControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @MockitoBean
     BeerService beerService;
 
     BeerServiceImpl beerServiceImpl = new BeerServiceImpl();
 
     @Test
+    void testCreateNewBeer() {
+        Beer testBeer = beerServiceImpl.listBeers().getFirst();
 
+        System.out.println("Beer: " + testBeer);
+    }
+
+
+    @Test
     void testListBeers() throws  Exception{
 
         given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
@@ -58,4 +69,21 @@ class BeerControllerTest {
                 .andExpect(jsonPath("$.beerName", is(testBeer.getBeerName())))
                 .andExpect(jsonPath("$.beerStyle", is(testBeer.getBeerStyle().name())));
     }
+
+    @Test
+    void handlePost() throws Exception{
+
+        Beer testBeer = beerServiceImpl.listBeers().getFirst();
+
+        given(beerService.saveNewBeer(testBeer)).willReturn(testBeer);
+
+        mockMvc.perform(get("/api/v1/beer/")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string("Location", "/api/v1/beer/" + testBeer.getId()))
+                .andExpect(jsonPath("beerName", is(testBeer.getBeerName())));
+    }
+
+
 }
