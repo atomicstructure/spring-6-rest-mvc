@@ -7,6 +7,8 @@ import com.samantha.spring6restmvc.services.CustomerService;
 import com.samantha.spring6restmvc.services.CustomerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -43,6 +46,36 @@ class CustomerControllerTest {
         customerServiceImpl = new CustomerServiceImpl();
     }
 
+    @Captor
+    ArgumentCaptor<UUID> argumentCaptor;
+
+    @Test
+    void testPatchCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().getFirst();
+
+        mockMvc.perform(patch("/api/v1/customer/" + customer.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isNoContent());
+
+        verify(customerService).patchCustomerById(argumentCaptor.capture(), any(Customer.class));
+        assertThat(argumentCaptor.getValue()).isEqualTo(customer.getId());
+    }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().getFirst();
+
+        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+
+        verify(customerService).deleteById(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue()).isEqualTo(customer.getId());
+    }
+
     @Test
     void testUpdateCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().getFirst();
@@ -50,9 +83,11 @@ class CustomerControllerTest {
         mockMvc.perform(put("/api/v1/customer/" + customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(customer)));
+                .content(objectMapper.writeValueAsString(customer)))
+                .andExpect(status().isNoContent());
 
-        verify(customerService).updateCustomerById(any(UUID.class), any(Customer.class));
+        verify(customerService).updateCustomerById(argumentCaptor.capture(), any(Customer.class));
+        assertThat(argumentCaptor.getValue()).isEqualTo(customer.getId());
     }
 
     @Test
