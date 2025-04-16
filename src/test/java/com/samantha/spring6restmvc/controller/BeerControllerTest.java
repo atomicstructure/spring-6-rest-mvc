@@ -67,7 +67,7 @@ class BeerControllerTest {
     @Test
     void testDeleteBeer() throws Exception {
         Beer beer = beerServiceImpl.listBeers().getFirst();
-        mockMvc.perform(delete(BeerController.BEER_PATH + beer.getId())
+        mockMvc.perform(delete(BeerController.BEER_ID_PATH, beer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
 
@@ -127,7 +127,7 @@ class BeerControllerTest {
 
         given(beerService.getBeerById(testBeer.getId())).willReturn(testBeer);
 
-        mockMvc.perform(get(BeerController.BEER_PATH + "/" + testBeer.getId())
+        mockMvc.perform(get(BeerController.BEER_ID_PATH, testBeer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
