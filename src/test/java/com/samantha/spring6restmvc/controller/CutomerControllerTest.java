@@ -16,6 +16,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 
+import java.sql.Struct;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -49,18 +52,25 @@ class CustomerControllerTest {
     @Captor
     ArgumentCaptor<UUID> argumentCaptor;
 
+    @Captor
+    ArgumentCaptor<Customer> customerArgumentCaptor;
+
     @Test
     void testPatchCustomer() throws Exception {
         Customer customer = customerServiceImpl.listCustomers().getFirst();
 
+        Map<String, Object> customerMap = new HashMap<>();
+        customerMap.put("customerName", "Updated Name");
+
         mockMvc.perform(patch("/api/v1/customer/" + customer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(customer)))
+                .content(objectMapper.writeValueAsString(customerMap)))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).patchCustomerById(argumentCaptor.capture(), any(Customer.class));
+        verify(customerService).patchCustomerById(argumentCaptor.capture(), customerArgumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).isEqualTo(customer.getId());
+        assertThat(customerArgumentCaptor.getValue().getCustomerName()).isEqualTo("Updated Name");
     }
 
     @Test
