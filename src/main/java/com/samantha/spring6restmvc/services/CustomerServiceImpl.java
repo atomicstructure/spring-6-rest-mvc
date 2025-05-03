@@ -1,5 +1,6 @@
 package com.samantha.spring6restmvc.services;
 
+import com.samantha.spring6restmvc.exceptions.NotFoundException;
 import com.samantha.spring6restmvc.model.Customer;
 import org.springframework.stereotype.Service;
 
@@ -13,27 +14,27 @@ public class CustomerServiceImpl implements CustomerService{
 
     public CustomerServiceImpl() {
         this.customerMap = new HashMap<>();
-        
+
         Customer customer1 = Customer.builder()
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .customerName("Samantha")
                 .version(1)
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .build();
         Customer customer2 = Customer.builder()
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .customerName("John")
                 .version(1)
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .build();
         Customer customer3 = Customer.builder()
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .customerName("Jane")
                 .version(1)
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .build();
         customerMap.put(customer1.getId(), customer1);
         customerMap.put(customer2.getId(), customer2);
@@ -47,19 +48,24 @@ public class CustomerServiceImpl implements CustomerService{
 
     @Override
     public Customer getCustomerById(UUID id) {
-        return customerMap.get(id);
+        Customer customer = customerMap.get(id);
+
+        if (customer == null) {
+            throw new NotFoundException("Customer with ID " + id + " not found");
+        }
+
+        return customer;
     }
 
     @Override
     public Customer saveNewCustomer(Customer customer) {
 
         Customer savedCustomer = Customer.builder()
-
-                .Id(UUID.randomUUID())
+                .id(UUID.randomUUID())
                 .customerName(customer.getCustomerName())
                 .version(customer.getVersion())
                 .createdDate(LocalDateTime.now())
-                .lastModifiedDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .build();
         customerMap.put(savedCustomer.getId(), savedCustomer);
         return savedCustomer;
@@ -71,6 +77,7 @@ public class CustomerServiceImpl implements CustomerService{
         if (existingCustomer != null) {
             existingCustomer.setCustomerName(customer.getCustomerName());
             existingCustomer.setVersion(1);
+            existingCustomer.setUpdatedDate(LocalDateTime.now());
         } else {
             throw new RuntimeException("Customer not found");
         }
@@ -85,13 +92,19 @@ public class CustomerServiceImpl implements CustomerService{
     public void patchCustomerById(UUID customerId, Customer customer) {
         Customer existingCustomer = customerMap.get(customerId);
         if (existingCustomer != null) {
+            boolean updated = false;
+
             if (customer.getCustomerName() != null) {
                 existingCustomer.setCustomerName(customer.getCustomerName());
+                updated = true;
+            }
+
+            if (updated) {
+                existingCustomer.setUpdatedDate(LocalDateTime.now());
             }
         } else {
             throw new RuntimeException("Customer not found");
         }
-
     }
 
 

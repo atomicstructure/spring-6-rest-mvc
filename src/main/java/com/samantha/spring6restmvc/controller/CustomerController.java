@@ -19,10 +19,6 @@ public class CustomerController {
     public static final String CUSTOMER_ID_PATH = CUSTOMER_PATH + "/{customerId}";
     private final CustomerService customerService;
 
-    public void updateCustomerById(UUID customerId, Customer customer) {
-        customerService.updateCustomerById(customerId, customer);
-    }
-
     @PatchMapping(CUSTOMER_ID_PATH)
     public ResponseEntity updateCustomerPathById(@PathVariable("customerId") UUID customerId, @RequestBody Customer customer) {
         customerService.patchCustomerById(customerId, customer);

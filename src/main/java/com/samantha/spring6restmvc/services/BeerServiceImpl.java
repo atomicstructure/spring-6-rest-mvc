@@ -1,5 +1,6 @@
 package com.samantha.spring6restmvc.services;
 
+import com.samantha.spring6restmvc.exceptions.NotFoundException;
 import com.samantha.spring6restmvc.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,9 +65,14 @@ public class BeerServiceImpl implements BeerService{
 
     @Override
     public Beer getBeerById(UUID id) {
-                log.debug("Getting beer by ID: " + id.toString());
-                return beerMap.get(id);
+        log.debug("Getting beer by ID: " + id.toString());
+        Beer beer = beerMap.get(id);
 
+        if (beer == null) {
+            throw new NotFoundException("Beer with ID " + id + " not found");
+        }
+
+        return beer;
     }
 
     @Override
@@ -100,22 +106,16 @@ public class BeerServiceImpl implements BeerService{
             existingBeer.setVersion(beer.getVersion());
             existingBeer.setUpdatedDate(LocalDateTime.now());
         } else {
-            throw new RuntimeException("Beer not found");
-
+            throw new NotFoundException("Beer with ID " + beerId + " not found");
         }
-
-//        existingBeer.setBeerName(beer.getBeerName());
-//        existingBeer.setBeerStyle(beer.getBeerStyle());
-//        existingBeer.setUpc(beer.getUpc());
-//        existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
-//        existingBeer.setPrice(beer.getPrice());
-//        existingBeer.setVersion(beer.getVersion());
-//
-//        beerMap.put(existingBeer.getId(), existingBeer);
     }
 
     @Override
     public void deleteById(UUID beerId) {
+        if (!beerMap.containsKey(beerId)) {
+            throw new NotFoundException("Beer with ID " + beerId + " not found");
+        }
+
         beerMap.remove(beerId);
     }
 
@@ -125,20 +125,35 @@ public class BeerServiceImpl implements BeerService{
     public void patchBeerById(UUID beerId, Beer beer) {
         Beer existingBeer = beerMap.get(beerId);
 
+        if (existingBeer == null) {
+            throw new NotFoundException("Beer with ID " + beerId + " not found");
+        }
+
+        boolean updated = false;
+
         if (StringUtils.hasText(beer.getBeerName())){
             existingBeer.setBeerName(beer.getBeerName());
+            updated = true;
         }
         if (beer.getBeerStyle() != null){
             existingBeer.setBeerStyle(beer.getBeerStyle());
+            updated = true;
         }
         if (StringUtils.hasText(beer.getUpc())) {
             existingBeer.setUpc(beer.getUpc());
+            updated = true;
         }
         if (beer.getPrice() != null) {
             existingBeer.setPrice(beer.getPrice());
+            updated = true;
         }
         if (beer.getQuantityOnHand() != null) {
             existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            updated = true;
+        }
+
+        if (updated) {
+            existingBeer.setUpdatedDate(LocalDateTime.now());
         }
     }
 }

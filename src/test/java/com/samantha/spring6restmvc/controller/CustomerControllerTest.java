@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samantha.spring6restmvc.model.Customer;
 import com.samantha.spring6restmvc.services.CustomerService;
 import com.samantha.spring6restmvc.services.CustomerServiceImpl;
-import org.apache.catalina.util.CustomObjectInputStream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
