@@ -53,8 +53,12 @@ public class BeerController {
 
     @GetMapping(value = BEER_PATH)
     public List<Beer> listBeers() {
-        log.debug("Getting list of beers in Controller");
         return beerService.listBeers();
+    }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity handleNotFound() {
+        System.out.println("Handling Not Found Exception");
+        return ResponseEntity.notFound().build();
     }
 
     @GetMapping(value = BEER_ID_PATH)

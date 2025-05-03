@@ -1,6 +1,5 @@
 package com.samantha.spring6restmvc.services;
 
-import com.samantha.spring6restmvc.exceptions.NotFoundException;
 import com.samantha.spring6restmvc.model.Customer;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +48,6 @@ public class CustomerServiceImpl implements CustomerService{
     @Override
     public Customer getCustomerById(UUID id) {
         Customer customer = customerMap.get(id);
-
-        if (customer == null) {
-            throw new NotFoundException("Customer with ID " + id + " not found");
-        }
 
         return customer;
     }

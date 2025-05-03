@@ -1,6 +1,5 @@
 package com.samantha.spring6restmvc.services;
 
-import com.samantha.spring6restmvc.exceptions.NotFoundException;
 import com.samantha.spring6restmvc.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -68,10 +67,6 @@ public class BeerServiceImpl implements BeerService{
         log.debug("Getting beer by ID: " + id.toString());
         Beer beer = beerMap.get(id);
 
-        if (beer == null) {
-            throw new NotFoundException("Beer with ID " + id + " not found");
-        }
-
         return beer;
     }
 
@@ -105,16 +100,12 @@ public class BeerServiceImpl implements BeerService{
             existingBeer.setPrice(beer.getPrice());
             existingBeer.setVersion(beer.getVersion());
             existingBeer.setUpdatedDate(LocalDateTime.now());
-        } else {
-            throw new NotFoundException("Beer with ID " + beerId + " not found");
         }
     }
 
     @Override
     public void deleteById(UUID beerId) {
-        if (!beerMap.containsKey(beerId)) {
-            throw new NotFoundException("Beer with ID " + beerId + " not found");
-        }
+
 
         beerMap.remove(beerId);
     }
@@ -125,9 +116,7 @@ public class BeerServiceImpl implements BeerService{
     public void patchBeerById(UUID beerId, Beer beer) {
         Beer existingBeer = beerMap.get(beerId);
 
-        if (existingBeer == null) {
-            throw new NotFoundException("Beer with ID " + beerId + " not found");
-        }
+
 
         boolean updated = false;
 
