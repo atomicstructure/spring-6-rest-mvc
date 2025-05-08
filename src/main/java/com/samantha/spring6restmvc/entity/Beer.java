@@ -3,7 +3,6 @@ package com.samantha.spring6restmvc.entity;
 import com.samantha.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
@@ -13,6 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Beer {
@@ -33,4 +33,6 @@ public class Beer {
     private BigDecimal price;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
+
+
 }
