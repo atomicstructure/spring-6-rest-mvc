@@ -1,6 +1,6 @@
 package com.samantha.spring6restmvc.services;
 
-import com.samantha.spring6restmvc.model.Beer;
+import com.samantha.spring6restmvc.model.BeerDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,15 +9,15 @@ import java.util.UUID;
 
 @Service
 public interface BeerService {
-    List<Beer> listBeers();
+    List<BeerDTO> listBeers();
 
-    Optional<Beer> getBeerById(UUID id);
+    Optional<BeerDTO> getBeerById(UUID id);
 
-    Beer saveNewBeer(Beer beer);
+    BeerDTO saveNewBeer(BeerDTO beer);
 
-    void updateBeerById(UUID beerId, Beer beer);
+    void updateBeerById(UUID beerId, BeerDTO beer);
 
     void deleteById(UUID beerId);
 
-    void patchBeerById(UUID beerId, Beer beer);
+    void patchBeerById(UUID beerId, BeerDTO beer);
 }

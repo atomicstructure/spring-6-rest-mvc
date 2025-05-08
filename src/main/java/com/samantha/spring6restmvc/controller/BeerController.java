@@ -1,6 +1,6 @@
 package com.samantha.spring6restmvc.controller;
 
-import com.samantha.spring6restmvc.model.Beer;
+import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(path = BEER_ID_PATH, consumes = "application/json")
-    public ResponseEntity updateBeerPathById(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity updateBeerPathById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         beerService.patchBeerById(beerId, beer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -35,16 +35,16 @@ public class BeerController {
     }
 
     @PutMapping(value = BEER_ID_PATH, consumes = "application/json")
-    public ResponseEntity updateByID(@PathVariable("beerId") UUID beerId, @RequestBody Beer beer) {
+    public ResponseEntity updateByID(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
         beerService.updateBeerById(beerId, beer);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(value = BEER_PATH,consumes = "application/json")
-    public ResponseEntity handlePost(@RequestBody Beer beer) {
+    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
         log.debug("Handling post in Controller");
-        Beer savedBeer = beerService.saveNewBeer(beer);
+        BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
        HttpHeaders headers = new HttpHeaders();
        headers.add("Location", BEER_PATH + "/" + savedBeer.getId().toString());
@@ -52,13 +52,13 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH)
-    public List<Beer> listBeers() {
+    public List<BeerDTO> listBeers() {
         return beerService.listBeers();
     }
 
 
     @GetMapping(value = BEER_ID_PATH)
-    public Beer getBeerById(@PathVariable("beerId") UUID beerId){
+    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId){
 
         log.debug("Getting beer by ID in Controller  123");
         return beerService.getBeerById(beerId).orElseThrow(NotFoundException::new);
