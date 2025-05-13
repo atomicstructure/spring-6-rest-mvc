@@ -1,5 +1,6 @@
 package com.samantha.spring6restmvc.services;
 
+import com.samantha.spring6restmvc.entity.Customer;
 import com.samantha.spring6restmvc.mappers.CustomerMapper;
 import com.samantha.spring6restmvc.model.CustomerDTO;
 import com.samantha.spring6restmvc.repositories.CustomerRepository;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
 
 
 @Service
@@ -21,12 +24,16 @@ public class CustomerServiceJPA implements CustomerService{
 
     @Override
     public List<CustomerDTO> listCustomers() {
-        return List.of();
+        return customerRepository.findAll()
+                .stream()
+                .map(customerMapper::customerToCustomerDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Optional<CustomerDTO> getCustomerById(UUID uuid) {
-        return Optional.empty();
+        return Optional.ofNullable(customerMapper
+                .customerToCustomerDto(customerRepository.findById(uuid).orElse(null)));
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.samantha.spring6restmvc.controller;
 
-import com.samantha.spring6restmvc.entity.Beer;
-import com.samantha.spring6restmvc.model.BeerDTO;
-import com.samantha.spring6restmvc.repositories.BeerRepository;
+import com.samantha.spring6restmvc.entity.Customer;
+import com.samantha.spring6restmvc.model.CustomerDTO;
+import com.samantha.spring6restmvc.repositories.CustomerRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,40 +10,40 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 @SpringBootTest
-class BeerControllerIT {
-    @Autowired
-    BeerController beerController;
+class CustomerControllerIT {
 
     @Autowired
-    BeerRepository beerRepository;
+    CustomerController customerController;
+
+    @Autowired
+    CustomerRepository customerRepository;
+
 
     @Test
     void testGetById() {
-        Beer beer = beerRepository.findAll().getFirst();
-
-        BeerDTO dto = beerController.getBeerById(beer.getId());
+        Customer customer = customerRepository.findAll().getFirst();
+        Optional<CustomerDTO> dto = customerController.getCustomerById(customer.getId());
 
         assertThat(dto).isNotNull();
     }
 
-
     @Test
-    void testBeerIdNotFound() {
+    void testCustomerIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
-            beerController.getBeerById(UUID.randomUUID());
+            customerController.getCustomerById(UUID.randomUUID());
         });
     }
 
     @Test
-    void testListBeers() {
-        List<BeerDTO> dtos = beerController.listBeers();
+    void testListCustomers() {
+        List<CustomerDTO> dtos = customerController.listCustomers();
 
         assertThat(dtos.size()).isEqualTo(3);
     }
@@ -52,8 +52,8 @@ class BeerControllerIT {
     @Transactional
     @Test
     void testEmptyList() {
-        beerRepository.deleteAll();
-        List<BeerDTO> dtos = beerController.listBeers();
+        customerRepository.deleteAll();
+        List<CustomerDTO> dtos = customerController.listCustomers();
 
         assertThat(dtos.size()).isEqualTo(0);
     }
