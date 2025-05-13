@@ -1,6 +1,7 @@
 package com.samantha.spring6restmvc.controller;
 
 import com.samantha.spring6restmvc.entity.Beer;
+import com.samantha.spring6restmvc.mappers.BeerMapper;
 import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
@@ -27,6 +28,25 @@ class BeerControllerIT {
     @Autowired
     BeerRepository beerRepository;
 
+    @Autowired
+    BeerMapper beerMapper;
+
+    @Test
+    void testUpdateBeer() {
+        Beer beer = beerRepository.findAll().getFirst();
+        BeerDTO beerDTO = beerMapper.beerToBeerDto(beer);
+        beerDTO.setId(null);
+        beerDTO.setVersion(null);
+        final String beerName = "Updated";
+        beerDTO.setBeerName(beerName);
+        ResponseEntity responseEntity = beerController.updateByID(beer.getId(), beerDTO);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+        assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
+    }
+
     @Rollback
     @Transactional
     @Test
@@ -41,7 +61,7 @@ class BeerControllerIT {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
         assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
 
-        String[] locationUUID = Objects.requireNonNull(responseEntity.getHeaders().getLocation()).getPath().split("/");
+        String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
         UUID savedUUID = UUID.fromString(locationUUID[4]);
 
         Beer beer = beerRepository.findById(savedUUID).get();

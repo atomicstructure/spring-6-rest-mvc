@@ -1,12 +1,17 @@
 package com.samantha.spring6restmvc.controller;
 
+import com.samantha.spring6restmvc.entity.Beer;
 import com.samantha.spring6restmvc.entity.Customer;
+import com.samantha.spring6restmvc.mappers.CustomerMapper;
+import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.model.CustomerDTO;
 import com.samantha.spring6restmvc.repositories.CustomerRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -24,7 +29,47 @@ class CustomerControllerIT {
 
     @Autowired
     CustomerRepository customerRepository;
+    @Autowired
+    private CustomerMapper customerMapper;
 
+
+    @Test
+    void testUpdateCustomer() {
+        Customer customer = customerRepository.findAll().getFirst();
+        CustomerDTO customerDTO = customerMapper.customerToCustomerDto(customer);
+
+
+        final String customerName = "Updated";
+
+        customerDTO.setCustomerName(customerName);
+        ResponseEntity responseEntity = customerController.updateById(customer.getId(), customerDTO);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Customer updatedCustomer = customerRepository.findById(customer.getId()).get();
+        assertThat(updatedCustomer.getCustomerName()).isEqualTo(customerName);
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void testNewSaveCustomer() {
+        CustomerDTO customerDTO = CustomerDTO.builder()
+                .customerName("New Customer")
+                .build();
+
+        ResponseEntity responseEntity = customerController.handlePost(customerDTO);
+
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
+        assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
+
+        String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
+        UUID savedUUID = UUID.fromString(locationUUID[4]);
+
+        Customer customer = customerRepository.findById(savedUUID).get();
+        assertThat(customer).isNotNull();
+    }
 
     @Test
     void testGetById() {
