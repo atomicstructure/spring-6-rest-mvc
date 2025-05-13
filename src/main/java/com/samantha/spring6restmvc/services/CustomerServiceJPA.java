@@ -1,6 +1,5 @@
 package com.samantha.spring6restmvc.services;
 
-import com.samantha.spring6restmvc.entity.Customer;
 import com.samantha.spring6restmvc.mappers.CustomerMapper;
 import com.samantha.spring6restmvc.model.CustomerDTO;
 import com.samantha.spring6restmvc.repositories.CustomerRepository;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
@@ -42,14 +42,19 @@ public class CustomerServiceJPA implements CustomerService{
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
-        customerRepository.findById(customerId).ifPresent(customerEntity -> {
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
+        AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
+
+        customerRepository.findById(customerId).ifPresentOrElse(customerEntity -> {
             customerEntity.setCustomerName(customer.getCustomerName());
             customerEntity.setVersion(customer.getVersion());
+            atomicReference.set(Optional.of(customerMapper
+                    .customerToCustomerDto(customerRepository.save(customerEntity))));
 
-            customerRepository.save(customerEntity);
+        }, () -> {
+            atomicReference.set(Optional.empty());
         });
-
+        return  atomicReference.get();
     }
 
     @Override

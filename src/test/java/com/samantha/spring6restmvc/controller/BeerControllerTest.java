@@ -56,8 +56,8 @@ class BeerControllerTest {
     @Test
     void testPatchBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
-
-        mockMvc.perform(patch(BeerController.BEER_PATH + beer.getId())
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
+        mockMvc.perform(patch(BeerController.BEER_ID_PATH, beer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beer)))
@@ -68,6 +68,7 @@ class BeerControllerTest {
     @Test
     void testDeleteBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
+
         mockMvc.perform(delete(BeerController.BEER_ID_PATH, beer.getId())
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
@@ -80,15 +81,16 @@ class BeerControllerTest {
     void testUpdateBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
 
-        mockMvc.perform(put(BeerController.BEER_PATH + beer.getId())
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
+        
+        mockMvc.perform(put(BeerController.BEER_ID_PATH, beer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beer)))
                 .andExpect(status().isNoContent());
 
 
-        verify(beerService).updateBeerById(argumentCaptor.capture(), any(BeerDTO.class));
-        assertThat(argumentCaptor.getValue().equals(beer.getId()));
+        verify(beerService).updateBeerById(any(UUID.class), any(BeerDTO.class));
     }
 
     @Test

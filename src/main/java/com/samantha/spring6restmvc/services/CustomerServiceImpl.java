@@ -67,15 +67,13 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public void updateCustomerById(UUID customerId, CustomerDTO customer) {
+    public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
         CustomerDTO existingCustomer = customerMap.get(customerId);
-        if (existingCustomer != null) {
+
             existingCustomer.setCustomerName(customer.getCustomerName());
             existingCustomer.setVersion(1);
             existingCustomer.setUpdatedDate(LocalDateTime.now());
-        } else {
-            throw new RuntimeException("Customer not found");
-        }
+        return Optional.of(existingCustomer);
     }
 
     @Override
