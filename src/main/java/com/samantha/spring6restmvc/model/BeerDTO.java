@@ -18,6 +18,7 @@ public class BeerDTO {
     @NotBlank
     @NotNull
     private String beerName;
+
     private BeerStyle beerStyle;
     private String upc;
     private Integer quantityOnHand;
