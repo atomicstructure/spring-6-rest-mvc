@@ -1,6 +1,5 @@
 package com.samantha.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.services.BeerService;
@@ -27,8 +26,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-
 @WebMvcTest(BeerController.class)
 class BeerControllerTest {
 
@@ -54,7 +51,6 @@ class BeerControllerTest {
     @Captor
     ArgumentCaptor<BeerDTO> beerArgumentCaptor;
 
-
     @Test
     void testPatchBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
@@ -67,9 +63,13 @@ class BeerControllerTest {
 
         verify(beerService).patchBeerById(argumentCaptor.capture(), any(BeerDTO.class));
     }
+
     @Test
     void testDeleteBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
+
+
+        given(beerService.deleteById(any(UUID.class))).willReturn(true);
 
         mockMvc.perform(delete(BeerController.BEER_ID_PATH, beer.getId())
                 .accept(MediaType.APPLICATION_JSON))
@@ -84,19 +84,34 @@ class BeerControllerTest {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
 
         given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
-        
+
         mockMvc.perform(put(BeerController.BEER_ID_PATH, beer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beer)))
                 .andExpect(status().isNoContent());
 
-
         verify(beerService).updateBeerById(any(UUID.class), any(BeerDTO.class));
     }
 
     @Test
-    void testCreateNewBeer() throws Exception{
+    void testUpdateBeerBlankName() throws Exception {
+        BeerDTO beer = beerServiceImpl.listBeers().getFirst();
+        beer.setBeerName("");
+        given(beerService.updateBeerById(any(), any())).willReturn(Optional.of(beer));
+
+        MvcResult mvcResult = mockMvc.perform(put(BeerController.BEER_ID_PATH, beer.getId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("length()", is(1)))
+                .andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
+    }
+
+    @Test
+    void testCreateNewBeer() throws Exception {
         BeerDTO beer = beerServiceImpl.listBeers().getFirst();
 
         beer.setVersion(null);
@@ -112,9 +127,8 @@ class BeerControllerTest {
                 .andExpect(header().exists("Location"));
     }
 
-
     @Test
-    void testListBeers() throws  Exception{
+    void testListBeers() throws Exception {
 
         given(beerService.listBeers()).willReturn(beerServiceImpl.listBeers());
 
@@ -132,8 +146,9 @@ class BeerControllerTest {
         mockMvc.perform(get(BeerController.BEER_ID_PATH, UUID.randomUUID()))
                 .andExpect(status().isNotFound());
     }
+
     @Test
-    void getBeerById() throws Exception{
+    void getBeerById() throws Exception {
 
         BeerDTO testBeer = beerServiceImpl.listBeers().getFirst();
 
@@ -158,8 +173,8 @@ class BeerControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beerDTO)))
-                        .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("length()", is(2)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("length()", is(6)))
                 .andReturn();
         System.out.println(mvcResult.getResponse().getContentAsString());
     }
