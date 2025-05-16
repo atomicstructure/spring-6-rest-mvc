@@ -22,7 +22,7 @@ public interface CustomerService {
 
     Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer);
 
-    void deleteById(UUID customerId);
+    boolean deleteById(UUID customerId);
 
     void patchCustomerById(UUID customerId, CustomerDTO customer);
 }

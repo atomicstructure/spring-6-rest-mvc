@@ -13,13 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
+@Transactional
 @SpringBootTest
 class BeerControllerIT {
     @Autowired
@@ -31,6 +31,26 @@ class BeerControllerIT {
     @Autowired
     BeerMapper beerMapper;
 
+
+    @Test
+    void testDeleteBeerByIdNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.deleteById(UUID.randomUUID());
+        });
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void testDeleteBeerById() {
+        Beer beer = beerRepository.findAll().getFirst();
+        ResponseEntity responseEntity = beerController.deleteById(beer.getId());
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Beer deletedBeer = beerRepository.findById(beer.getId()).orElse(null);
+        assertThat(deletedBeer).isNull();
+    }
 
     @Test
     void testUpdateBeerNotFound() {
@@ -77,6 +97,8 @@ class BeerControllerIT {
 
     }
 
+    @Rollback
+    @Transactional
     @Test
     void testGetById() {
         Beer beer = beerRepository.findAll().getFirst();
@@ -94,6 +116,7 @@ class BeerControllerIT {
         });
     }
 
+
     @Test
     void testListBeers() {
         List<BeerDTO> dtos = beerController.listBeers();
@@ -101,8 +124,7 @@ class BeerControllerIT {
         assertThat(dtos.size()).isEqualTo(3);
     }
 
-    @Rollback
-    @Transactional
+
     @Test
     void testEmptyList() {
         beerRepository.deleteAll();

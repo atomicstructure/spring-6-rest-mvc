@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,9 @@ public class BeerController {
 
     @DeleteMapping(BEER_ID_PATH)
     public  ResponseEntity deleteById(@PathVariable("beerId") UUID beerId) {
-        beerService.deleteById(beerId);
+        if (!beerService.deleteById(beerId)) {;
+            throw new NotFoundException();
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
@@ -45,7 +48,7 @@ public class BeerController {
     }
 
     @PostMapping(value = BEER_PATH,consumes = "application/json")
-    public ResponseEntity handlePost(@RequestBody BeerDTO beer) {
+    public ResponseEntity handlePost(@Validated @RequestBody BeerDTO beer) {
         log.debug("Handling post in Controller");
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 

@@ -77,8 +77,9 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public void deleteById(UUID customerId) {
+    public boolean deleteById(UUID customerId) {
         customerMap.remove(customerId);
+        return false;
     }
 
     @Override

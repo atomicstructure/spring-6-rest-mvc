@@ -29,12 +29,14 @@ public class CustomerController {
 
     @DeleteMapping(CUSTOMER_ID_PATH)
     public  ResponseEntity deleteById(@PathVariable("customerId") UUID customerId) {
-        customerService.deleteById(customerId);
+        if (!customerService.deleteById(customerId)) {;
+            throw new NotFoundException();
+        }
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
     @PutMapping(value = CUSTOMER_ID_PATH, consumes = "application/json")
     public ResponseEntity updateById(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDTO customer) {
-        
+
         if (customerService.updateCustomerById(customerId, customer).isEmpty()){
             throw new NotFoundException();
         };;

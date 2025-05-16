@@ -21,6 +21,7 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@Transactional
 @SpringBootTest
 class CustomerControllerIT {
 
@@ -32,6 +33,24 @@ class CustomerControllerIT {
     @Autowired
     private CustomerMapper customerMapper;
 
+
+    @Test
+    void testDeleteCustomerByIdNotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            customerController.deleteById(UUID.randomUUID());
+        });
+    }
+
+    @Test
+    void testDeleteCustomerById() {
+        Customer customer = customerRepository.findAll().getFirst();
+        ResponseEntity responseEntity = customerController.deleteById(customer.getId());
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(204));
+
+        Optional<Customer> deletedCustomer = customerRepository.findById(customer.getId());
+        assertThat(deletedCustomer).isEmpty();
+    }
 
     @Test
     void testUpdateCustomerNotFound() {
