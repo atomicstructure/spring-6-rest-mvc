@@ -2,6 +2,7 @@ package com.samantha.spring6restmvc.controller;
 
 import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.services.BeerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -24,7 +25,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(path = BEER_ID_PATH, consumes = "application/json")
-    public ResponseEntity updateBeerPathById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateBeerPathById(@PathVariable("beerId") UUID beerId,@Validated @RequestBody BeerDTO beer) {
         beerService.patchBeerById(beerId, beer);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

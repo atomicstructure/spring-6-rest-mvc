@@ -55,15 +55,16 @@ class BeerControllerIT {
     }
 
     @Test
-    void testPatchBeer() throws Exception {
+    void testPatchBeerBadName() throws Exception {
         Beer beer = beerRepository.findAll().getFirst();
-        Map<String, Object>  beerMap = new HashMap<>();
+        Map<String, Object> beerMap = new HashMap<>();
+
         beerMap.put("beerName", "Updated Ogundare Olusesi Oluwafemi Updated Ogundare Olusesi Oluwafemi Updated Ogundare Olusesi Oluwafemi Updated Ogundare Olusesi Oluwafemi Updated Ogundare Olusesi Oluwafemi");
 
         mockMvc.perform(patch(BeerController.BEER_ID_PATH, beer.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(beer)))
+                        .content(objectMapper.writeValueAsString(beerMap)))
                 .andExpect(status().isBadRequest());
     }
 
