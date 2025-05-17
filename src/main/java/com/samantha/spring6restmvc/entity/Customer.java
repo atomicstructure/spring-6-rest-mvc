@@ -2,8 +2,7 @@ package com.samantha.spring6restmvc.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
@@ -20,10 +19,9 @@ public class Customer {
 
     @Id
     @GeneratedValue(generator = "UUID")
+    @JdbcTypeCode(SqlTypes.CHAR)
     @UuidGenerator
     @Column(nullable = false)
-    @JdbcTypeCode(SqlTypes.CHAR)
-
     private UUID id;
     private String customerName;
 
