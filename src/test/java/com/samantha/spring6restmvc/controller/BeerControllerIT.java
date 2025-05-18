@@ -1,7 +1,7 @@
 package com.samantha.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.samantha.spring6restmvc.entity.Beer;
+import com.samantha.spring6restmvc.entities.Beer;
 import com.samantha.spring6restmvc.mappers.BeerMapper;
 import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.repositories.BeerRepository;
@@ -23,7 +23,6 @@ import java.util.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

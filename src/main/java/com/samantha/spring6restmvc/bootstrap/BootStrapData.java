@@ -1,7 +1,7 @@
 package com.samantha.spring6restmvc.bootstrap;
 
-import com.samantha.spring6restmvc.entity.Beer;
-import com.samantha.spring6restmvc.entity.Customer;
+import com.samantha.spring6restmvc.entities.Beer;
+import com.samantha.spring6restmvc.entities.Customer;
 import com.samantha.spring6restmvc.model.BeerStyle;
 
 import com.samantha.spring6restmvc.repositories.BeerRepository;

@@ -1,6 +1,6 @@
 package com.samantha.spring6restmvc.mappers;
 
-import com.samantha.spring6restmvc.entity.Beer;
+import com.samantha.spring6restmvc.entities.Beer;
 import com.samantha.spring6restmvc.model.BeerDTO;
 import org.mapstruct.Mapper;
 
