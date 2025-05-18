@@ -1,6 +1,6 @@
 package com.samantha.spring6restmvc.repositories;
 
-import com.samantha.spring6restmvc.entity.Beer;
+import com.samantha.spring6restmvc.entities.Beer;
 import com.samantha.spring6restmvc.model.BeerStyle;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;

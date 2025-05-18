@@ -1,7 +1,7 @@
 package com.samantha.spring6restmvc.mappers;
 
 
-import com.samantha.spring6restmvc.entity.Customer;
+import com.samantha.spring6restmvc.entities.Customer;
 import com.samantha.spring6restmvc.model.CustomerDTO;
 import org.mapstruct.Mapper;
 

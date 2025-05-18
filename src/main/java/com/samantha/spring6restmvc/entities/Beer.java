@@ -1,8 +1,7 @@
-package com.samantha.spring6restmvc.entity;
+package com.samantha.spring6restmvc.entities;
 
 import com.samantha.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
-import jakarta.validation.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

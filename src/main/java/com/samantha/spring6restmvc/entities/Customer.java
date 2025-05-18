@@ -1,4 +1,4 @@
-package com.samantha.spring6restmvc.entity;
+package com.samantha.spring6restmvc.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,6 +24,10 @@ public class Customer {
     @Column(nullable = false)
     private UUID id;
     private String customerName;
+
+
+    @Column(nullable = false)
+    private String email;
 
     @Version
     private Integer version;
