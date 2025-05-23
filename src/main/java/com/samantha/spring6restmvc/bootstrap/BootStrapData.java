@@ -72,6 +72,7 @@ public class BootStrapData implements CommandLineRunner {
             Customer customer1 = Customer.builder()
 
                     .customerName("Samantha")
+                    .email("customer1@example.com")
                     .version(1)
                     .createdDate(LocalDateTime.now())
                     .updatedDate(LocalDateTime.now())
@@ -80,6 +81,7 @@ public class BootStrapData implements CommandLineRunner {
             Customer customer2 = Customer.builder()
 
                     .customerName("John")
+                    .email("customer2@example.com")
                     .version(1)
                     .createdDate(LocalDateTime.now())
                     .updatedDate(LocalDateTime.now())
@@ -87,6 +89,7 @@ public class BootStrapData implements CommandLineRunner {
             Customer customer3 = Customer.builder()
 
                     .customerName("Jane")
+                    .email("customer3@example.com")
                     .version(1)
                     .createdDate(LocalDateTime.now())
                     .updatedDate(LocalDateTime.now())
