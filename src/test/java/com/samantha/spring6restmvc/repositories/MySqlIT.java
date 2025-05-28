@@ -10,7 +10,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.Duration;
+
 import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -23,7 +23,6 @@ public class MySqlIT {
     @Container
     @ServiceConnection
     static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.32");
-
 
 
 
