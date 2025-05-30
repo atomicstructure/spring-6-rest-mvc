@@ -20,11 +20,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.*;
 
+import static org.hamcrest.core.Is.is;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -53,6 +54,16 @@ class BeerControllerIT {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
+
+    @Test
+    void testListBeersByName() throws Exception {
+
+        mockMvc.perform(patch(BeerController.BEER_PATH)
+                        .queryParam("beerName", "IPA"))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.size()", is(100)));
+
+    }
     @Test
     void testPatchBeerBadName() throws Exception {
         Beer beer = beerRepository.findAll().getFirst();
