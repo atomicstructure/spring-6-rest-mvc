@@ -2,7 +2,6 @@ package com.samantha.spring6restmvc.controller;
 
 import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.services.BeerService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -60,7 +59,7 @@ public class BeerController {
 
     @GetMapping(value = BEER_PATH)
     public List<BeerDTO> listBeers(@RequestParam(required = false) String beerName) {
-        return beerService.listBeers();
+        return beerService.listBeers(beerName);
     }
 
 
