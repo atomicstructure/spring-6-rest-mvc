@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 @Primary
 @RequiredArgsConstructor
-public class BeerServiceJPA implements BeerService{
+public class BeerServiceJPA implements BeerService {
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
 
@@ -37,15 +38,12 @@ public class BeerServiceJPA implements BeerService{
         if (StringUtils.hasText(beerName) && beerStyle == null) {
 
             beerPage = listBeerByName(beerName, pageRequest);
-        }
-        else if (!StringUtils.hasText(beerName) && beerStyle != null){
+        } else if (!StringUtils.hasText(beerName) && beerStyle != null) {
 
             beerPage = listBeerByStyle(beerStyle, pageRequest);
-        }
-        else if (StringUtils.hasText(beerName) && beerStyle != null){
+        } else if (StringUtils.hasText(beerName) && beerStyle != null) {
             beerPage = listBeerByNameAndStyle(beerName, beerStyle, pageRequest);
-        }
-        else {
+        } else {
             beerPage = beerRepository.findAll(pageRequest);
         }
 
@@ -54,9 +52,6 @@ public class BeerServiceJPA implements BeerService{
         }
 
         return beerPage.map(beerMapper::beerToBeerDto);
-//        return beerPage.stream()
-//                .map(beerMapper::beerToBeerDto)
-//                .collect(Collectors.toList());
 
     }
 
@@ -69,17 +64,21 @@ public class BeerServiceJPA implements BeerService{
         } else {
             queryPageNumber = DEFAULT_PAGE;
         }
-        if (pageSize == null){
+        if (pageSize == null) {
             queryPageSize = DEFAULT_PAGE_SIZE;
-        }else {
+        } else {
             if (pageSize > 1000) {
                 queryPageSize = 1000;
             } else {
                 queryPageSize = pageSize;
             }
         }
-        return PageRequest.of(queryPageNumber, queryPageSize);
+        Sort sort = Sort.by(Sort.Direction.ASC, "beerName");
+        return PageRequest.of(queryPageNumber, queryPageSize, sort);
     }
+
+
+
 
     private Page<Beer> listBeerByNameAndStyle(String beerName, BeerStyle beerStyle, PageRequest pageRequest) {
         return beerRepository.findAllByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%" , beerStyle, null);
