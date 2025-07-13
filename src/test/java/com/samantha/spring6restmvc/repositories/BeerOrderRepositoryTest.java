@@ -1,7 +1,9 @@
 package com.samantha.spring6restmvc.repositories;
 
 import com.samantha.spring6restmvc.entities.Beer;
+import com.samantha.spring6restmvc.entities.BeerOrder;
 import com.samantha.spring6restmvc.entities.Customer;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +33,28 @@ class BeerOrderRepositoryTest {
         testBeer = beerRepository.findAll().getFirst();
     }
 
+
+    @Transactional
     @Test
     void testBeerOrders(){
-        System.out.println(beerOrderRepository.count());
-        System.out.println(customerRepository.count());
-        System.out.println(beerRepository.count());
-        System.out.println(testCustomer.getCustomerName());
-        System.out.println(testBeer.getBeerName());
+        BeerOrder beerOrder = BeerOrder.builder()
+                .customerRef("Test Order")
+                .customer(testCustomer)
+                .build();
+
+        BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+
+        System.out.println(savedBeerOrder.getCustomerRef());
     }
 }
+
+
+
+
+
+
+
+
+
+
+
