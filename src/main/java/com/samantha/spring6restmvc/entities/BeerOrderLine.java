@@ -21,7 +21,7 @@ public class BeerOrderLine {
     @GeneratedValue(generator = "UUID")
     @UuidGenerator
     @JdbcTypeCode(SqlTypes.CHAR)
-    @Column(length = 36, columnDefinition = "varchar(36)", updatable = false, nullable = false )
+    @Column(length = 36, columnDefinition = "char(36)", updatable = false, nullable = false )
     private UUID id;
 
     @Version
@@ -38,6 +38,16 @@ public class BeerOrderLine {
         return this.id == null;
     }
 
+
+    @ManyToOne
+    private BeerOrder beerOrder;
+
+    @ManyToOne
+    private Beer beer;
+
     private Integer orderQuantity = 0;
     private Integer quantityAllocated = 0;
+
+
+
 }

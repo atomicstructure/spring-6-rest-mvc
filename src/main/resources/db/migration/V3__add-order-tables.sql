@@ -15,8 +15,8 @@ CREATE TABLE `beer_order`
 
 CREATE TABLE `beer_order_line`
 (
-    id                 varchar(36) NOT NULL,
-    beer_id            varchar(36) DEFAULT NULL,
+    id                 char(36) NOT NULL,
+    beer_id            char(36) DEFAULT NULL,
     created_date       datetime(6) DEFAULT NULL,
     last_modified_date datetime(6) DEFAULT NULL,
     order_quantity     int         DEFAULT NULL,
