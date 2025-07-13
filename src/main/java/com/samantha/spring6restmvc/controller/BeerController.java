@@ -50,7 +50,7 @@ public class BeerController {
 
     @PostMapping(value = BEER_PATH,consumes = "application/json")
     public ResponseEntity handlePost(@Validated @RequestBody BeerDTO beer) {
-        log.debug("Handling post in Controller");
+
         BeerDTO savedBeer = beerService.saveNewBeer(beer);
 
        HttpHeaders headers = new HttpHeaders();
