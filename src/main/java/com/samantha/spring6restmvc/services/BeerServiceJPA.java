@@ -47,9 +47,6 @@ public class BeerServiceJPA implements BeerService {
             beerPage = beerRepository.findAll(pageRequest);
         }
 
-        if (showInventory == null || !showInventory) {
-            beerPage.forEach(beer -> beer.setQuantityOnHand(null));
-        }
 
         return beerPage.map(beerMapper::beerToBeerDto);
 
