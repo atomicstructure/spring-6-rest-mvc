@@ -1,6 +1,7 @@
 package com.samantha.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.samantha.spring6restmvc.config.SpringSecConfig;
 import com.samantha.spring6restmvc.model.BeerDTO;
 import com.samantha.spring6restmvc.services.BeerService;
 import com.samantha.spring6restmvc.services.BeerServiceImpl;
@@ -10,6 +11,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BeerController.class)
+@Import(SpringSecConfig.class)
 class BeerControllerTest {
 
     @Autowired
@@ -122,7 +125,7 @@ class BeerControllerTest {
         given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers(null, null, false, 1, 25).getContent().getFirst());
 
         mockMvc.perform(post(BeerController.BEER_PATH)
-                        .with(httpBasic("atomicstructure", "Floating1!"))
+
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(beer)))
@@ -175,6 +178,7 @@ class BeerControllerTest {
         given(beerService.saveNewBeer(any(BeerDTO.class))).willReturn(beerServiceImpl.listBeers(null, null, false, 1, 25).getContent().getFirst());
 
         MvcResult mvcResult = mockMvc.perform(post(BeerController.BEER_PATH)
+                        .with(httpBasic("atomicstructure", "Floating1!"))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beerDTO)))
