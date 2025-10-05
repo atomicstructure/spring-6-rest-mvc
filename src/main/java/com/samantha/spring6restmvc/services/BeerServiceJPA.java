@@ -31,7 +31,7 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
     private final CacheManager cacheManager;
 
-    public void clearCache(UUID beerId) {
+    private void clearCache(UUID beerId) {
         cacheManager.getCache("beerListCache").clear();
         cacheManager.getCache("beerCache").clear();
     }
