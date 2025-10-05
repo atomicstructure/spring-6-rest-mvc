@@ -5,6 +5,7 @@ import com.samantha.spring6restmvc.model.CustomerDTO;
 import com.samantha.spring6restmvc.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,12 @@ import java.util.stream.Collectors;
 public class CustomerServiceJPA implements CustomerService{
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
+    private final CacheManager cacheManager;
+
+    private void clearCache(UUID customerId) {
+        cacheManager.getCache("customerListCache").clear();
+        cacheManager.getCache("customerCache").clear();
+    }
 
 
     @Cacheable(cacheNames = "customerListCache")
@@ -46,11 +53,13 @@ public class CustomerServiceJPA implements CustomerService{
 
     @Override
     public CustomerDTO saveNewCustomer(CustomerDTO customer) {
+        cacheManager.getCache("customerCache").clear();
         return customerMapper.customerToCustomerDto(customerRepository.save(customerMapper.customerDtoToCustomer(customer)));
     }
 
     @Override
     public Optional<CustomerDTO> updateCustomerById(UUID customerId, CustomerDTO customer) {
+        clearCache(customerId);
         AtomicReference<Optional<CustomerDTO>> atomicReference = new AtomicReference<>();
 
         customerRepository.findById(customerId).ifPresentOrElse(customerEntity -> {
@@ -67,6 +76,7 @@ public class CustomerServiceJPA implements CustomerService{
 
     @Override
     public boolean deleteById(UUID customerId) {
+        clearCache(customerId);
         if (customerRepository.existsById(customerId)) {;
             customerRepository.deleteById(customerId);
             return true;
@@ -77,6 +87,6 @@ public class CustomerServiceJPA implements CustomerService{
 
     @Override
     public void patchCustomerById(UUID customerId, CustomerDTO customer) {
-
+        clearCache(customerId);
     }
 }
