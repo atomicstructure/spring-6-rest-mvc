@@ -2,9 +2,10 @@
     <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
         </encoder>
-
-        <root level="INFO">
-            <appender-ref ref="jsonConsoleAppender"/>
-        </root>
     </appender>
+
+    <root level="INFO">
+        <appender-ref ref="jsonConsoleAppender"/>
+    </root>
+
 </configuration>
