@@ -15,10 +15,7 @@ public class SpringSecConfig {
     @Order(1)
     public SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) throws Exception {
         http.securityMatcher("/actuator/**")
-                .authorizeHttpRequests(authorize -> {
-                    authorize.requestMatchers("/actuator/health", "/actuator/info").permitAll();
-                })
-                .httpBasic(Customizer.withDefaults());
+                .authorizeHttpRequests(authorize-> authorize.anyRequest().permitAll());
         return http.build();
     }
 
