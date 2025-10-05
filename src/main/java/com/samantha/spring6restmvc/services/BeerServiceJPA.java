@@ -7,6 +7,7 @@ import com.samantha.spring6restmvc.model.BeerStyle;
 import com.samantha.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -28,7 +29,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BeerServiceJPA implements BeerService {
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
+    private final CacheManager cacheManager;
 
+    public void clearCache(UUID beerId) {
+        cacheManager.getCache("beerListCache").clear();
+        cacheManager.getCache("beerCache").clear();
+    }
 
     private final static int DEFAULT_PAGE = 0;
     private final static int DEFAULT_PAGE_SIZE = 25;
@@ -111,11 +117,15 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public BeerDTO saveNewBeer(BeerDTO beer) {
+        cacheManager.getCache("beerListCache").clear();
         return beerMapper.beerToBeerDto(beerRepository.save(beerMapper.beerDtoToBeer(beer)));
     }
 
     @Override
     public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer) {
+
+        clearCache(beerId);
+
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
         beerRepository.findById(beerId).ifPresentOrElse(beerEntity -> {
@@ -133,13 +143,9 @@ public class BeerServiceJPA implements BeerService {
         return atomicReference.get();
     }
 
-    @Caching(evict = {
-            @CacheEvict(cacheNames = "beerCache", key = "#beerId"),
-            @CacheEvict(cacheNames = "beerListCache")
-    })
-
     @Override
     public boolean deleteById(UUID beerId) {
+        clearCache(beerId);
         if (beerRepository.existsById(beerId)) {;
             beerRepository.deleteById(beerId);
             return true;
@@ -149,6 +155,7 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public void patchBeerById(UUID beerId, BeerDTO beer) {
+        clearCache(beerId);
 
     }
 }
