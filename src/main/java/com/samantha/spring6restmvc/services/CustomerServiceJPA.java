@@ -4,6 +4,8 @@ import com.samantha.spring6restmvc.mappers.CustomerMapper;
 import com.samantha.spring6restmvc.model.CustomerDTO;
 import com.samantha.spring6restmvc.repositories.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 
-
+@Slf4j
 @Service
 @Primary
 @RequiredArgsConstructor
@@ -22,16 +24,22 @@ public class CustomerServiceJPA implements CustomerService{
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
+
+    @Cacheable(cacheNames = "customerListCache")
     @Override
     public List<CustomerDTO> listCustomers() {
+        log.info("ListCustomers in Service");
         return customerRepository.findAll()
                 .stream()
                 .map(customerMapper::customerToCustomerDto)
                 .collect(Collectors.toList());
     }
 
+
+    @Cacheable(cacheNames = "customerCache", key = "#uuid", condition = "#showInventory == false")
     @Override
     public Optional<CustomerDTO> getCustomerById(UUID uuid) {
+        log.info("GetCustomerById in Service");
         return Optional.ofNullable(customerMapper
                 .customerToCustomerDto(customerRepository.findById(uuid).orElse(null)));
     }

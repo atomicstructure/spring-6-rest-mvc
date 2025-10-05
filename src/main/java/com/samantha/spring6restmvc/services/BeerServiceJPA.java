@@ -31,8 +31,12 @@ public class BeerServiceJPA implements BeerService {
     private final static int DEFAULT_PAGE = 0;
     private final static int DEFAULT_PAGE_SIZE = 25;
 
+
+    @Cacheable(cacheNames = "beerListCache", condition = "#showInventory == false")
     @Override
     public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
+
+        log.info("ListBeers in Service");
 
         PageRequest pageRequest = builPageRequest(pageNumber, pageSize);
         Page<Beer> beerPage;
