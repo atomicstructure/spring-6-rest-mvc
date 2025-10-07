@@ -1,5 +1,6 @@
 package com.samantha.spring6restmvc.bootstrap;
 
+import com.samantha.spring6restmvc.repositories.BeerOrderRepository;
 import com.samantha.spring6restmvc.repositories.BeerRepository;
 import com.samantha.spring6restmvc.repositories.CustomerRepository;
 import com.samantha.spring6restmvc.services.BeerCsvService;
@@ -28,10 +29,12 @@ class BootStrapDataTest {
 
     @Autowired
     private BeerCsvService beerCsvService;
+    @Autowired
+    private BeerOrderRepository beerOrderRepository;
 
     @BeforeEach
     void setUp() {
-        bootStrapData = new BootStrapData(beerRepository, customerRepository, beerCsvService);
+        bootStrapData = new BootStrapData(beerRepository, customerRepository, beerCsvService, beerOrderRepository);
     }
 
     @Test
