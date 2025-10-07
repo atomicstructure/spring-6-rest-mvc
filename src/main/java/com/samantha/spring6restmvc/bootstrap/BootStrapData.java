@@ -47,31 +47,32 @@ public class BootStrapData implements CommandLineRunner {
     }
 
     private void loadOrderData() {
-        beerOrderRepository.deleteAll();
-        val customers = customerRepository.findAll();
-        val beers = beerRepository.findAll();
+        if (beerOrderRepository.count() == 0){
+            val customers = customerRepository.findAll();
+            val beers = beerRepository.findAll();
 
-        val beerIterator = beers.iterator();
+            val beerIterator = beers.iterator();
 
-        customers.forEach(customer -> {
-            Beer beer1 = beerIterator.next();
-            Beer beer2 =beerIterator.next();
+            customers.forEach(customer -> {
+                Beer beer1 = beerIterator.next();
+                Beer beer2 =beerIterator.next();
 
-            val beerOrder = BeerOrder.builder()
-                    .customer(customer)
-                    .beerOrderLines(Set.of(
-                            BeerOrderLine.builder()
-                                    .beer(beer1)
-                                    .orderQuantity(1)
-                                    .build(),
-                            BeerOrderLine.builder()
-                                    .beer(beer2)
-                                    .orderQuantity(2)
-                                    .build()
-                    ))
-                    .build();
-            beerOrderRepository.save(beerOrder);
-        });
+                val beerOrder = BeerOrder.builder()
+                        .customer(customer)
+                        .beerOrderLines(Set.of(
+                                BeerOrderLine.builder()
+                                        .beer(beer1)
+                                        .orderQuantity(1)
+                                        .build(),
+                                BeerOrderLine.builder()
+                                        .beer(beer2)
+                                        .orderQuantity(2)
+                                        .build()
+                        ))
+                        .build();
+                beerOrderRepository.save(beerOrder);
+            });
+        }
     }
 
     private void loadCsvData() throws FileNotFoundException {
