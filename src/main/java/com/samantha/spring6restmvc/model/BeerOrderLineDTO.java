@@ -1,6 +1,7 @@
 package com.samantha.spring6restmvc.model;
 
 import com.samantha.spring6restmvc.entities.BeerOrder;
+import jakarta.validation.constraints.Min;
 import lombok.Builder;
 import lombok.Data;
 import java.sql.Timestamp;
@@ -16,14 +17,10 @@ public class BeerOrderLineDTO {
     private Timestamp createdDate;
 
     private Timestamp lastModifiedDate;
-
-    public boolean isNew() {
-        return this.id == null;
-    }
-
     private BeerOrder beerOrder;
     private BeerDTO beer;
 
+    @Min(value = 1, message = "Quantity on hand must be greater than 0")
     private Integer orderQuantity;
     private Integer quantityAllocated;
 }

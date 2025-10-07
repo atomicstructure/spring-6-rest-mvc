@@ -21,6 +21,7 @@ import java.util.UUID;
 @Data
 public class BeerOrderDTO {
 
+
     private UUID id;
     private Long version;
     private Timestamp createdDate;
