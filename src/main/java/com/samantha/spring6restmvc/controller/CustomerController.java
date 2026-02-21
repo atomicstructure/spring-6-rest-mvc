@@ -39,7 +39,7 @@ public class CustomerController {
 
         if (customerService.updateCustomerById(customerId, customer).isEmpty()){
             throw new NotFoundException();
-        };;
+        }
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

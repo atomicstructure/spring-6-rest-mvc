@@ -3,6 +3,7 @@ package com.samantha.spring6restmvc.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class BeerOrderDTO {
 
     private CustomerDTO customer;
 
+    private BigDecimal paymentAmount;
 
     private Set<BeerOrderLineDTO> beerOrderLines;
 

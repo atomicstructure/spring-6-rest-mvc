@@ -20,7 +20,7 @@ import java.util.UUID;
 public class BeerController {
 
     public static final String BEER_PATH = "/api/v1/beer";
-    public static final String BEER_ID_PATH = "/api/v1/beer/{beerId}";
+    public static final String BEER_ID_PATH = BEER_PATH + "/{beerId}";
 
     private final BeerService beerService;
 

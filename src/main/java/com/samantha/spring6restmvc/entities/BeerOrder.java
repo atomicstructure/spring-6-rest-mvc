@@ -1,11 +1,17 @@
 package com.samantha.spring6restmvc.entities;
 
 import jakarta.persistence.*;
-import jakarta.persistence.CascadeType;
-import lombok.*;
-import org.hibernate.annotations.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Set;
 import java.util.UUID;
@@ -18,15 +24,15 @@ import java.util.UUID;
 public class BeerOrder {
 
     public BeerOrder(UUID id, Long version, Timestamp createdDate, Timestamp lastModifiedDate, String customerRef,
-                     Customer customer, Set<BeerOrderLine> beerOrderLines, BeerOrderShipment beerOrderShipment) {
+                     Customer customer, BigDecimal paymentAmount, Set<BeerOrderLine> beerOrderLines, BeerOrderShipment beerOrderShipment) {
         this.id = id;
         this.version = version;
         this.createdDate = createdDate;
         this.lastModifiedDate = lastModifiedDate;
         this.customerRef = customerRef;
         this.setCustomer(customer);
+        this.setPaymentAmount(paymentAmount);
         this.setBeerOrderLines(beerOrderLines);
-        this.beerOrderShipment = beerOrderShipment;
         this.setBeerOrderShipment(beerOrderShipment);
     }
 
@@ -53,6 +59,8 @@ public class BeerOrder {
 
     private String customerRef;
 
+    private BigDecimal paymentAmount;
+
     @ManyToOne
     private Customer customer;
 
@@ -70,17 +78,15 @@ public class BeerOrder {
         }
     }
 
+    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
+    private Set<BeerOrderLine> beerOrderLines;
+
     public void setBeerOrderLines(Set<BeerOrderLine> beerOrderLines) {
         if (beerOrderLines != null) {
             this.beerOrderLines = beerOrderLines;
-            beerOrderLines.forEach(beerOrderLine -> {
-                beerOrderLine.setBeerOrder(this);
-            });
+            beerOrderLines.forEach(beerOrderLine -> beerOrderLine.setBeerOrder(this));
         }
     }
-
-    @OneToMany(mappedBy = "beerOrder", cascade = CascadeType.ALL)
-    private Set<BeerOrderLine> beerOrderLines;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     private BeerOrderShipment beerOrderShipment;
