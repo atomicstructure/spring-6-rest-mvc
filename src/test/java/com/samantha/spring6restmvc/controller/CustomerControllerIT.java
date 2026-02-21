@@ -122,7 +122,7 @@ class CustomerControllerIT {
     @Transactional
     @Test
     void testEmptyList() {
-        customerRepository.deleteAll();
+        customerRepository.deleteAllInBatch();
         List<CustomerDTO> dtos = customerController.listCustomers();
 
         assertThat(dtos.size()).isEqualTo(0);

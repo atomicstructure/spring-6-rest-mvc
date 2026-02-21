@@ -59,10 +59,11 @@ public class BeerOrder {
 
     private String customerRef;
 
-    private BigDecimal paymentAmount;
 
     @ManyToOne
     private Customer customer;
+
+    private BigDecimal paymentAmount;
 
     public void setCustomer(Customer customer) {
         if (customer != null) {

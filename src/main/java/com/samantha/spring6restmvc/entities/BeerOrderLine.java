@@ -39,7 +39,6 @@ public class BeerOrderLine {
         return this.id == null;
     }
 
-
     @ManyToOne
     private BeerOrder beerOrder;
 
@@ -49,7 +48,5 @@ public class BeerOrderLine {
     @Min(value = 1, message = "Quantity on hand must be greater than 0")
     private Integer orderQuantity = 0;
     private Integer quantityAllocated = 0;
-
-
 
 }
